@@ -1,95 +1,52 @@
 var express = require('express');
 var router = express.Router();
+var request = require('sync-request')
+var userModel = require("../models/users");
 
-var uid2 = require('uid2')
-var bcrypt = require('bcrypt');
+router.post("/getArticlesBySource", async function(req,res, next){
+ // console.log(req.body.lang, req.body.country)
+var articleList = request(
+  "GET",
+  `https://newsapi.org/v2/sources?language=${req.body.lang}&country=${req.body.country}&apiKey=c27f8d9db341451e91f5c317cca53e34`
+);
+var articleListAPI = JSON.parse( articleList.body);
+console.log(articleListAPI);
+res.json({articleListAPI} );
 
-var userModel = require('../models/users')
+});
 
 
-router.post('/sign-up', async function(req,res,next){
+router.post("/addWishList", async function (req, res, next) {
+  /* récupérer les 4 DATA de la wishlist du store*/
+  var newArticleToWishList = {
+    title : req.body.title, 
+    content : req.body.content, 
+    description : req.body.description, 
+    image : req.body.image
 
-  var error = []
-  var result = false
-  var saveUser = null
-  var token = null
-
-  const data = await userModel.findOne({
-    email: req.body.emailFromFront
-  })
-
-  if(data != null){
-    error.push('utilisateur déjà présent')
   }
 
-  if(req.body.usernameFromFront == ''
-  || req.body.emailFromFront == ''
-  || req.body.passwordFromFront == ''
-  ){
-    error.push('champs vides')
-  }
+  /* pouser les data dans la  */
 
 
-  if(error.length == 0){
+  const userConnected = await userModel.findOne({
+    token: token
+  });
 
-    var hash = bcrypt.hashSync(req.body.passwordFromFront, 10);
-    var newUser = new userModel({
-      username: req.body.usernameFromFront,
-      email: req.body.emailFromFront,
-      password: hash,
-      token: uid2(32),
-    })
-  
-    saveUser = await newUser.save()
-  
-    
-    if(saveUser){
-      result = true
-      token = saveUser.token
-    }
-  }
+  var UserWithNEwArticle = userConnected.wishlist.push(newArticleToWishList)
+
+
+  /* envoyer les données de la wihlist dans la bdd */
+  saveUserWithNEwArticle = await UserWithNEwArticle.save()
   
 
-  res.json({result, saveUser, error, token})
-})
+  /*enregister les articles de la bdd */
 
-router.post('/sign-in', async function(req,res,next){
-
-  var result = false
-  var user = null
-  var error = []
-  var token = null
+  var newWishList = UserWithNEwArticle.Wishlist
   
-  if(req.body.emailFromFront == ''
-  || req.body.passwordFromFront == ''
-  ){
-    error.push('champs vides')
-  }
+  /* définir si ici on veut que ce soit la route du login*/
+  res.json({ newWishlist });
+});
 
-  if(error.length == 0){
-    const user = await userModel.findOne({
-      email: req.body.emailFromFront,
-    })
-  
-    
-    if(user){
-      if(bcrypt.compareSync(req.body.passwordFromFront, user.password)){
-        result = true
-        token = user.token
-      } else {
-        result = false
-        error.push('mot de passe incorrect')
-      }
-      
-    } else {
-      error.push('email incorrect')
-    }
-  }
-  
-
-  res.json({result, user, error, token})
-
-
-})
 
 module.exports = router;

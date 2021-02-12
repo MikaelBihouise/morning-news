@@ -20,7 +20,7 @@ function ScreenHome(props) {
 
   var handleSubmitSignup = async () => {
     
-    const data = await fetch('/sign-up', {
+    const data = await fetch('users/sign-up', {
       method: 'POST',
       headers: {'Content-Type': 'application/x-www-form-urlencoded'},
       body: `usernameFromFront=${signUpUsername}&emailFromFront=${signUpEmail}&passwordFromFront=${signUpPassword}`
@@ -39,7 +39,7 @@ function ScreenHome(props) {
 
   var handleSubmitSignin = async () => {
  
-    const data = await fetch('/sign-in', {
+    const data = await fetch('users/sign-in', {
       method: 'POST',
       headers: {'Content-Type': 'application/x-www-form-urlencoded'},
       body: `emailFromFront=${signInEmail}&passwordFromFront=${signInPassword}`

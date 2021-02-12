@@ -16,17 +16,31 @@ function ScreenSource(props) {
 
   useEffect(() => {
     const APIResultsLoading = async() => {
-      var langue = 'fr'
-      var country = 'fr'
-        
-      if(selectedLang == 'en'){
-        var langue = 'en'
-        var country = 'us'
+      var langue = "fr";
+      var country = "fr";
+
+      if (selectedLang == "en") {
+        var langue = "en";
+        var country = "us";
       }
-      props.changeLang(selectedLang)
-      const data = await fetch(`https://newsapi.org/v2/sources?language=${langue}&country=${country}&apiKey=c27f8d9db341451e91f5c317cca53e34`)
-      const body = await data.json()
-      setSourceList(body.sources)
+      props.changeLang(selectedLang);
+
+      // const data = await fetch("/getArticlesBySource", {
+      //   method: "POST",
+      //   headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      //   body: `lang=${langue}&country=${country}`,
+      // });
+
+      // console.log(data, 'data')
+      // const articleBySource = data.json()
+
+      // setSourceList(articleBySource.sources);
+      // console.log(articleBySource)
+      const data = await fetch(
+        `https://newsapi.org/v2/sources?language=${langue}&country=${country}&apiKey=c27f8d9db341451e91f5c317cca53e34`
+      );
+      const body = await data.json();
+      setSourceList(body.sources);
     }
 
     APIResultsLoading()
