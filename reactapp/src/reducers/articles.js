@@ -28,7 +28,7 @@ export default function(wishList = [], action){
         if(position != null){
             wishListCopy.splice(position,1)
         }
-
+            
         return wishListCopy
         
     } else {
