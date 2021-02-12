@@ -31,7 +31,10 @@ export default function(wishList = [], action){
             
         return wishListCopy
         
+    } else if (action.type == "loadWishlistFromDB") {
+        return action.WLfromDB;
+
     } else {
-        return wishList
+      return wishList;
     }
 }

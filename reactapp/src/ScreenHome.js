@@ -26,6 +26,7 @@ function ScreenHome(props) {
        });
 
        const wishlist = await data.json();
+       props.loadWishListfromDB(wishlist)
      };
      loadWishList();
    }, []);
@@ -123,12 +124,14 @@ function ScreenHome(props) {
 
 function mapDispatchToProps(dispatch){
   return {
-    addToken: function(token, article){
+    addToken: function(token){
       dispatch(
         { type: "addToken", token: token },
-        { type: "addArticle", articleLiked: article }
+        
       );
-      
+    }, 
+    loadWishListfromDB:function(WLfromDB){
+      dispatch({ type: "loadWishlistFromDB", WLfromDB: WLfromDB });
     }
   }
 }
