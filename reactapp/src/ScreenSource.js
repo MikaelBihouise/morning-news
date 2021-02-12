@@ -32,11 +32,8 @@ function ScreenSource(props) {
       });
 
       console.log(data)
-      const articleLoaded = await data.json();
+      const articleLoaded = data.json();
       console.log(articleLoaded);
-      //const articlesSorted = await articleLoaded.then(result => result.articleListAPI.sources);
-     // console.log(articlesSorted)
-      setSourceList(articleLoaded.articleLoaded)
 
       // console.log(data, 'data')
       // const articleBySource = data.json()
