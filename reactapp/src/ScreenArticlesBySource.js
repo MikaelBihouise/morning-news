@@ -43,7 +43,18 @@ function ScreenArticlesBySource(props) {
     console.log(e)
     setVisible(false)
   }
+  const addArtcicleToWishLsit = async (article)=>{
+    props.addToWishList(article)
+    const data = await fetch("/addToWishList", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: `title=${article.title}&content=${article.content}&description=${article.description}&urltoimage=${article.urlToImage}`,
 
+
+      });
+
+
+  }
   return (
     <div>
          
@@ -71,7 +82,7 @@ function ScreenArticlesBySource(props) {
                   }
                   actions={[
                       <Icon type="read" key="ellipsis2" onClick={() => showModal(article.title,article.content)} />,
-                      <Icon type="like" key="ellipsis" onClick={()=> {props.addToWishList(article)}} />
+                      <Icon type="like" key="ellipsis" onClick={()=> {addArtcicleToWishLsit(article)}} />
                   ]}
                   >
 

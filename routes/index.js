@@ -11,12 +11,13 @@ var articleList = request(
 );
 var articleListAPI = JSON.parse( articleList.body);
 console.log(articleListAPI);
-res.json({articleListAPI} );
+var articleLoaded =articleListAPI.sources
+res.json({articleLoaded} );
 
 });
 
 
-router.post("/addWishList", async function (req, res, next) {
+router.post("/addToWishList", async function (req, res, next) {
   /* récupérer les 4 DATA de la wishlist du store*/
   var newArticleToWishList = {
     title : req.body.title, 
