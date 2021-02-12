@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import './App.css';
 import {Input,Button} from 'antd';
 import {Link, Redirect} from 'react-router-dom'
@@ -17,6 +17,20 @@ function ScreenHome(props) {
 
   const [listErrorsSignin, setErrorsSignin] = useState([])
   const [listErrorsSignup, setErrorsSignup] = useState([])
+
+   useEffect(() => {
+     const loadWishList = async () => {
+       const data = await fetch("/addToWishList", {
+         method: "POST",
+         headers: { "Content-Type": "application/x-www-form-urlencoded" },
+       });
+
+       const wishlist = await data.json();
+     };
+     loadWishList();
+   }, []);
+
+
 
   var handleSubmitSignup = async () => {
     
@@ -109,8 +123,12 @@ function ScreenHome(props) {
 
 function mapDispatchToProps(dispatch){
   return {
-    addToken: function(token){
-      dispatch({type: 'addToken', token: token})
+    addToken: function(token, article){
+      dispatch(
+        { type: "addToken", token: token },
+        { type: "addArticle", articleLiked: article }
+      );
+      
     }
   }
 }

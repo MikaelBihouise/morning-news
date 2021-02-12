@@ -4,6 +4,7 @@ var request = require('sync-request')
 var userModel = require("../models/users");
 
 router.post("/getArticlesBySource", async function(req,res, next){
+
  // console.log(req.body.lang, req.body.country)
 var articleList = request(
   "GET",
@@ -18,46 +19,44 @@ res.json({articleLoaded} );
 
 
 router.post("/addToWishList", async function (req, res, next) {
-  /* récupérer les 4 DATA de la wishlist du store*/
-  var newArticleToWishList = {
-    title : req.body.title, 
-    content : req.body.content, 
-    description : req.body.description, 
-    image : req.body.urltoimage,
 
+  if(req.body == undefined){
+
+    const userConnected = await userModel.findOne({
+      token: req.body.token,
+    });
+
+    var initialWLlog = userConnected.wishlist;
+
+    res.json({initialWLlog})
+  }else{
+    /* récupérer les 4 DATA de la wishlist du store*/
+    var newArticleToWishList = {
+      title: req.body.title,
+      content: req.body.content,
+      description: req.body.description,
+      image: req.body.urltoimage,
+    };
+
+    const userConnected = await userModel.findOne({
+      token: req.body.token,
+    });
+
+    console.log(newArticleToWishList);
+
+    var UserWithNEwArticle = userConnected.wishlist.push(newArticleToWishList);
+
+    console.log(userConnected, "HELLO WORLD");
+
+    await userConnected.save();
+
+    userConnected.save() ? (save = true) : (save = false);
+
+    res.json({ save });
   }
- console.log(newArticleToWishList , "naW")
-  /* pouser les data dans la  */
-
-  //console.log(req.body.token, "pp");
-  const userConnected = await userModel.findOne({
-    token: req.body.token
-  });
-  console.log(userConnected,"uC");
-console.log(userConnected.wishlist);
-  var arrayWishList = userConnected.wishlist;
-
-  var newWishlist = arrayWishList.push(newArticleToWishList)
-
-  console.log(newWishlist);
-
-
-  userConnected.wishlist = newWishlist
-  
-
-  /* envoyer les données de la wihlist dans la bdd */
-  saveUserWithNEwArticle = await userConnected.save()
-  
-
-  /*enregister les articles de la bdd */
-
-  //var newWishList = UserWithNEwArticle.wishlist
-  
-  /* définir si ici on veut que ce soit la route du login*/
-  res.json({ newWishlist });
 });
 
-router.post("/deletToWishList", async function (req, res, next) {
+router.post("/deleteToWishList", async function (req, res, next) {
   /* récupérer la wishliste du user par le token*/
 
   const userConnected = await userModel.findOne({
@@ -78,9 +77,9 @@ router.post("/deletToWishList", async function (req, res, next) {
   userConnected.wishlist = newArrayWishList;
 
 
-  saveUserWithNEwArticle = await userConnected.save();
+ await userConnected.save();
 
-  res.json({ newWishlist });
+  res.json({  });
 });
 
 module.exports = router;
