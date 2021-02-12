@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react';
 import './App.css';
 import { Card, Icon, Modal} from 'antd';
 import Nav from './Nav'
-import {connect} from 'react-redux'
+import {connect, createStoreHook} from 'react-redux'
 
 const { Meta } = Card;
 
@@ -18,9 +18,11 @@ function ScreenArticlesBySource(props) {
 
   useEffect(() => {
     const findArticles = async() => {
-      const data = await fetch(`https://newsapi.org/v2/top-headlines?sources=${props.match.params.id}&apiKey=189771adbd2f40d4a27117edd90ff089`)
+      const data = await fetch(
+        `https://newsapi.org/v2/top-headlines?sources=${props.match.params.id}&apiKey=c27f8d9db341451e91f5c317cca53e34`
+      );
       const body = await data.json()
-      console.log(body)
+      //console.log(body)
       setArticleList(body.articles) 
     }
 
@@ -43,15 +45,16 @@ function ScreenArticlesBySource(props) {
     console.log(e)
     setVisible(false)
   }
-  const addArtcicleToWishLsit = async (article)=>{
+  const addArtcicleToWishList = async (article)=>{
     props.addToWishList(article)
     const data = await fetch("/addToWishList", {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: `title=${article.title}&content=${article.content}&description=${article.description}&urltoimage=${article.urlToImage}`,
-
-
-      });
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: `title=${article.title}&content=${article.content}&description=${article.description}&urltoimage=${article.urlToImage}&token=${props.token}`,
+    });
+      const articleAdded = await data.json()
+      console.log(articleAdded, 'prout')
+      
 
 
   }
@@ -82,7 +85,7 @@ function ScreenArticlesBySource(props) {
                   }
                   actions={[
                       <Icon type="read" key="ellipsis2" onClick={() => showModal(article.title,article.content)} />,
-                      <Icon type="like" key="ellipsis" onClick={()=> {addArtcicleToWishLsit(article)}} />
+                      <Icon type="like" key="ellipsis" onClick={()=> {addArtcicleToWishList(article)}} />
                   ]}
                   >
 
@@ -127,7 +130,10 @@ function mapDispatchToProps(dispatch){
   }
 }
 
+function mapStateToProps(state) {
+  return { token : state.token}
+}
 export default connect(
-  null,
+  mapStateToProps,
   mapDispatchToProps
 )(ScreenArticlesBySource)
