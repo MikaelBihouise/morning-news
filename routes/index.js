@@ -16,20 +16,22 @@ var articleLoaded =articleListAPI.sources
 res.json({articleLoaded} );
 
 });
+router.post("/loadWhisList", async function (req, res, next) {
+
+const userConnected = await userModel.findOne({
+  token: req.body.token,
+});
+
+var wishlistDB =userConnected.wishlist
+console.log(wishlistDB, 'WLDB');
+res.json({wishlistDB})
+
+})
 
 
 router.post("/addToWishList", async function (req, res, next) {
 
-  if(req.body == undefined){
 
-    const userConnected = await userModel.findOne({
-      token: req.body.token,
-    });
-
-    var initialWLlog = userConnected.wishlist;
-
-    res.json({initialWLlog})
-  }else{
     /* récupérer les 4 DATA de la wishlist du store*/
     var newArticleToWishList = {
       title: req.body.title,
@@ -53,7 +55,7 @@ router.post("/addToWishList", async function (req, res, next) {
     userConnected.save() ? (save = true) : (save = false);
 
     res.json({ save });
-  }
+
 });
 
 router.post("/deleteToWishList", async function (req, res, next) {

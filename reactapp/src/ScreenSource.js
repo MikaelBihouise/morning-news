@@ -13,6 +13,19 @@ function ScreenSource(props) {
   const [sourceList, setSourceList] = useState([])
   const [selectedLang, setSelectedLang] = useState(props.selectedLang)
 
+   useEffect(() => {
+     const loadWishList = async () => {
+       const data = await fetch("/loadWishList", {
+         method: "POST",
+         headers: { "Content-Type": "application/x-www-form-urlencoded" },
+         body: `token=${props.token}`,
+       });
+
+       const wishlist = await data.json();
+       props.loadWishListfromDB(wishlist);
+     };
+     loadWishList();
+   }, []);
 
   useEffect(() => {
     const APIResultsLoading = async() => {
@@ -86,15 +99,18 @@ function ScreenSource(props) {
 }
 
 function mapStateToProps(state){
-  return {selectedLang: state.selectedLang}
+  return {selectedLang: state.selectedLang, token: state.token}
 }
 
 function mapDispatchToProps(dispatch){
   return {
-    changeLang: function(selectedLang){
-      dispatch({type: 'changeLang', selectedLang: selectedLang})
-    }
-  }
+    changeLang: function (selectedLang) {
+      dispatch({ type: "changeLang", selectedLang: selectedLang });
+    },
+    loadWishListfromDB: function (WLfromDB) {
+      dispatch({ type: "loadWishlistFromDB", WLfromDB: WLfromDB });
+    },
+  };
 }
 
 export default connect(
