@@ -33,23 +33,59 @@ router.post("/addToWishList", async function (req, res, next) {
   const userConnected = await userModel.findOne({
     token: req.body.token
   });
-  //console.log(userConnected,"uC");
+  console.log(userConnected,"uC");
 console.log(userConnected.wishlist);
   var arrayWishList = userConnected.wishlist;
-  var UserWithNEwArticle = arrayWishList.push(newArticleToWishList)
-  console.log(UserWithNEwArticle);
+
+  var newWishlist = arrayWishList.push(newArticleToWishList)
+
+  console.log(newWishlist);
+
+
+  userConnected.wishlist = newWishlist
+  
 
   /* envoyer les données de la wihlist dans la bdd */
-  saveUserWithNEwArticle = await UserWithNEwArticle.save()
+  saveUserWithNEwArticle = await userConnected.save()
   
 
   /*enregister les articles de la bdd */
 
-  var newWishList = UserWithNEwArticle.Wishlist
+  //var newWishList = UserWithNEwArticle.wishlist
   
   /* définir si ici on veut que ce soit la route du login*/
   res.json({ newWishlist });
 });
 
+router.post("/deletToWishList", async function (req, res, next) {
+  /* récupérer la wishliste du user par le token*/
+
+  const userConnected = await userModel.findOne({
+    token: req.body.token,
+  });
+
+  /* récupérer la wishlist */
+  var arrayWishList = userConnected.wishlist;
+
+  /* filtrer la liste de article delete*/
+
+  var newArrayWishList = arrayWishList.filter(
+              (article) => article.title !== req.body.title)
+
+
+  
+    /*remettre à jour la wishlist dans DB*/ 
+  userConnected.wishlist = newArrayWishList;
+
+
+  saveUserWithNEwArticle = await userConnected.save();
+
+  res.json({ newWishlist });
+});
 
 module.exports = router;
+
+
+
+
+
