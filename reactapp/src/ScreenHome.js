@@ -18,18 +18,7 @@ function ScreenHome(props) {
   const [listErrorsSignin, setErrorsSignin] = useState([])
   const [listErrorsSignup, setErrorsSignup] = useState([])
 
-   useEffect(() => {
-     const loadWishList = async () => {
-       const data = await fetch("/addToWishList", {
-         method: "POST",
-         headers: { "Content-Type": "application/x-www-form-urlencoded" },
-       });
 
-       const wishlist = await data.json();
-       props.loadWishListfromDB(wishlist)
-     };
-     loadWishList();
-   }, []);
 
 
 
@@ -130,9 +119,7 @@ function mapDispatchToProps(dispatch){
         
       );
     }, 
-    loadWishListfromDB:function(WLfromDB){
-      dispatch({ type: "loadWishlistFromDB", WLfromDB: WLfromDB });
-    }
+    
   }
 }
 
